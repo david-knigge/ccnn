@@ -1,6 +1,5 @@
 name: ccnn
 channels:
-  - pyg
   - pytorch
   - defaults
 dependencies:
@@ -11,7 +10,6 @@ dependencies:
   - pytorch
   - cudatoolkit=11.3
   - torchvision
-  - pyg
   - torchtext
   - plotly
   - pip
