@@ -7,9 +7,7 @@ import ckconv
 import models
 from models.lightning_wrappers import (
     ClassificationWrapper,
-    PyGClassificationWrapper,
     RegressionWrapper,
-    PyGRegressionWrapper,
 )
 
 # typing
