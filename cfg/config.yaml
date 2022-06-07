@@ -2,7 +2,7 @@
 
 # global parameters
 device: cuda
-debug: False
+debug: True
 deterministic: False
 no_workers: -1
 seed: 0
@@ -109,7 +109,7 @@ test:
 # wandb logging
 wandb:
   project: main
-  entity: ck-experimental
+  entity: ccnn
 # checkpoint
 pretrained:
   load: False
