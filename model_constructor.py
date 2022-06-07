@@ -59,12 +59,7 @@ def construct_model(
     )
 
     # Wrap in PytorchLightning
-    if cfg.dataset.name in ["QM9"]:
-        Wrapper = PyGRegressionWrapper
-    elif cfg.dataset.name in ["ModelNet40", "ModelNet10"]:
-        Wrapper = PyGClassificationWrapper
-    else:
-        Wrapper = ClassificationWrapper
+    Wrapper = ClassificationWrapper
     model = Wrapper(
         network=network,
         cfg=cfg,

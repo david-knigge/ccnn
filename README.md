@@ -14,6 +14,10 @@ We provide an environment file; ``environment.yml`` containing the required depe
 ```
 conda env create -f environment.yml
 ```
+If you would like to install pytorch without cuda, instead run:
+```
+conda env create -f environment-nocuda.yml
+```
 
 ## Repository Structure
 This repository is organized as follows:

@@ -1,5 +1,4 @@
 import torch
-import torch_geometric
 
 
 class LayerNorm(torch.nn.Module):
