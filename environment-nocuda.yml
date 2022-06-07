@@ -1,4 +1,3 @@
-
 name: ccnn
 channels:
   - pytorch
