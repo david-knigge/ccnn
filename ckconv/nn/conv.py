@@ -7,11 +7,6 @@ import ckconv.nn.functional as ckconv_F
 import ckconv
 
 
-# class Conv1d(torch.nn.Conv1d):
-#     def forward(self, x):
-#         return ckconv_F.causal_fftconv(x, self.weight, self.bias)
-
-
 class ConvBase(torch.nn.Module):
     def __init__(
         self,

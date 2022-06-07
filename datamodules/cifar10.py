@@ -77,12 +77,8 @@ class CIFAR10DataModule(pl.LightningDataModule):
             train_transform = [
                 transforms.RandomCrop(32, padding=4, padding_mode="symmetric"),
                 transforms.RandomHorizontalFlip(),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    (0.4914, 0.4822, 0.4465),
-                    (0.247, 0.243, 0.261),
-                ),
-            ]
+            ] + train_transform
+
         self.train_transform = transforms.Compose(train_transform)
         self.val_test_transform = transforms.Compose(val_test_transform)
 

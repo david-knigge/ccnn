@@ -7,4 +7,3 @@ from .hooks import (
     visualize_conv_kernel_out_hook,
 )
 from .no_params import no_params
-from .psnr import psnr

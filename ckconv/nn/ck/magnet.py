@@ -148,49 +148,6 @@ class MAGNet(MFNBase):
             ]
         )
         # Initialize
-        # with torch.no_grad():
-        #     base_means = []
-        #     base_vars = []
-        #     grid = torch.linspace(-1, 1, steps=1000).view(1, 1, -1)
-        #     for idx, filter in enumerate(self.filters[1:]):
-        #         base = filter(grid)
-        #         base_means.append(base.mean())
-        #         base_vars.append(base.var())
-        #     # Init so that all freq. components have the same amplitude on initialization
-        #     accumulated_weight = None
-        #     for idx, lin in enumerate(self.linears):
-        #         layer = idx + 1
-        #         # torch.nn.init.orthogonal_(lin.weight)
-        #         torch.nn.init.kaiming_uniform_(lin.weight, nonlinearity='linear')
-        #         lin.weight.data *= np.sqrt(1.0 / (base_vars[idx] + base_means[idx] ** 2))
-        #         # Get norm of weights so far.
-        #         if accumulated_weight is None:
-        #             accumulated_weight = lin.weight.data.clone()
-        #         else:
-        #             accumulated_weight = torch.einsum(
-        #                 "ab...,bc...->ac...", lin.weight.data, accumulated_weight
-        #             )
-        #         accumulated_value = accumulated_weight.sum(dim=(1, 2))
-        #         # Initialize the bias
-        #         if lin.bias is not None:
-        #             lin.bias.data = accumulated_value / (hidden_channels * 2.0 ** layer)
-
-        # with torch.no_grad():
-        #     base_means = []
-        #     base_vars = []
-        #     grid = torch.linspace(-1, 1, steps=1000).view(1, 1, -1)
-        #     for idx, filter in enumerate(self.filters[1:]):
-        #         base = filter(grid)
-        #         base_means.append(base.mean())
-        #         base_vars.append(base.var())
-        #
-        #     for idx, lin in enumerate(self.linears):
-        #
-        #         torch.nn.init.kaiming_uniform_(lin.weight, nonlinearity="linear")
-        #         lin.weight.data *= np.sqrt(1.0 / (base_vars[idx] + base_means[idx] ** 2))
-        #         if lin.bias is not None:
-        #             lin.bias.data.fill_(1.0)
-
         for idx, lin in enumerate(self.linears):
             torch.nn.init.kaiming_uniform_(lin.weight, nonlinearity="linear")
             if lin.bias is not None:

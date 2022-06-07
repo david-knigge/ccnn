@@ -103,52 +103,6 @@ class SIRENBase(torch.nn.Module):
             self.output_linear.bias.data.fill_(0.0)
 
 
-class nSIREN(SIRENBase):  # TODO not working
-    def __init__(
-        self,
-        data_dim: int,
-        out_channels: int,
-        hidden_channels: int,
-        weight_norm: bool,
-        no_layers: int,
-        bias: bool,
-        bias_init: str,
-        omega_0: float,
-        learn_omega_0: bool,
-    ):
-        """
-        # nSIREN (new-SIREN) uses mappings of the form Sine(w0 W x + b) instead of Sine(w0[Wx + b]) as in Sitzmann et al., 2020, Romero et al., 2021.
-        Creates an no-layer MLP, which parameterizes a convolutional kernel as:
-        relative positions -> hidden_channels -> hidden_channels -> in_channels * out_channels
-        :param dim_linear:  Spatial dimension of the input, e.g., for audio = 1, images = 2.
-        :param out_channels:  input channels * output channels of the resulting convolutional kernel.
-        :param hidden_channels: Number of hidden units.
-        :param activation_function: Activation function used.
-        :param norm_type: Normalization type used.
-        :param bias:  If True, adds a learnable bias to the layers.
-        :param omega_0: Value of the omega_0 value (only used in Sine networks).
-        :param weight_dropout: Dropout rate applied to the sampled convolutional kernel.
-        """
-
-        # Get class of multiplied Linear Layers
-        Linear_hidden = getattr(ckconv.nn, f"MultipliedLinear{data_dim}d")
-        Linear_out = getattr(ckconv.nn, f"Linear{data_dim}d")
-
-        super().__init__(
-            data_dim=data_dim,
-            out_channels=out_channels,
-            hidden_channels=hidden_channels,
-            weight_norm=weight_norm,
-            no_layers=no_layers,
-            bias=bias,
-            bias_init=bias_init,
-            omega_0=omega_0,
-            learn_omega_0=learn_omega_0,
-            Linear_hidden=Linear_hidden,
-            Linear_out=Linear_out,
-        )
-
-
 #############################################
 #       SIREN as in Sitzmann et al., 2020
 ##############################################
