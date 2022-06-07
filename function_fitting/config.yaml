@@ -1,0 +1,44 @@
+# @package _global_
+
+# global parameters
+device: cuda
+debug: False
+deterministic: False
+no_workers: -1
+seed: 0
+comment: ''
+# kernels
+kernel:
+  type: ""
+  no_hidden: -1
+  no_layers: -1
+  omega_0: 0.0
+  bias: True
+  norm: Identity
+  nonlinearity: Identity
+target:
+  type: 'Random'
+  length: -1
+  dim: -1
+  no_channels: 1
+  count: -1
+optimizer:
+  name: ''
+  lr: 0.0
+  momentum: -1.
+  nesterov: False
+# training
+train:
+  log_interval: -1
+  do: True
+  no_iters: -1
+  loss_threshold: 0.0
+plot:
+  target: True
+  interval: -1
+  no_channels: 1
+  psnr: False # TODO
+  dpi: -1
+wandb:
+  project: function_approximation
+  entity: ck-experimental

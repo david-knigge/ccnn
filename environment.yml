@@ -1,0 +1,22 @@
+name: ccnn
+channels:
+  - pyg
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9
+  - h5py
+  - matplotlib
+  - torchaudio
+  - pytorch
+  - cudatoolkit=11.3
+  - torchvision
+  - pyg
+  - torchtext
+  - plotly
+  - pip
+  - pip:
+    - hydra-core
+    - wandb
+    - datasets
+    - pytorch-lightning

@@ -1,0 +1,189 @@
+# @package _global_
+
+# global parameters
+device: cuda
+debug: False
+deterministic: False
+no_workers: -1
+seed: 0
+comment: ''
+# network
+net:
+  type: ""
+  no_hidden: -1
+  no_blocks: -1
+  no_stages: -1
+  data_dim: 0                    # Should be overridden automatically
+  dropout: 0.0
+  dropout_in: 0.0
+  dropout_type: Dropout2d
+  norm: ""
+  nonlinearity: ""
+  block_width_factors: [0.0, ]
+  block:
+    type: default
+    prenorm: True
+  downsampling: [] # After the indices of these blocks place a downsampling layer.
+  downsampling_size: -1
+# kernels
+kernel:
+  type: ""
+  no_hidden: -1
+  no_layers: -1
+  omega_0: 0.0
+  input_scale: 0.0
+  bias: True
+  size: "same"
+  chang_initialize: True
+  norm: Identity
+  nonlinearity: Identity
+  init_spatial_value: 1.0   # Only != 1.0 if FlexConvs are used.
+  num_edges: -1 # In case of pointcloud data.
+  bottleneck_factor: -1 # In case of pointckconv, bottleneck is applied before pointconv.
+# mask
+mask:
+  type: ''
+  init_value: -1.
+  threshold: -1.
+  dynamic_cropping: False
+  temperature: 0.0        # For sigmoid mask
+  learn_mean: False
+# convolutions
+conv:
+  type: ""
+  causal: False
+  use_fft: False
+  bias: True
+  padding: "same"
+  stride: 1
+  cache: False
+# datamodules
+dataset:
+  name: ''
+  data_dir: '/data'
+  data_type: 'default'
+  augment: False
+  params:
+    permuted: False       # For permuted sMNIST
+    noise_padded: False   # For noise-padded CIFAR10
+    grayscale: False      # For LRA-Image dataset
+    memory_size: -1       # For copy memory problem
+    mfcc: False           # For MFCC pre-processing on SpeechCommands
+    drop_rate: 0.0        # For irregular SpeechCommands and CharTrajetories
+    target_idx: 0         # For QM9. It defines the property to predict. target_idx in [0, 18]
+    num_nodes: 1024       # For ModelNet. Number of nodes to sample.
+    metric: 'MAE'
+    seq_length: -1
+    resolution: 32        # Used for PathFinder
+# training
+train:
+  do: True
+  mixed_precision: False
+  epochs: -1
+  batch_size: -1
+  grad_clip: 0.0
+  max_epochs_no_improvement: 100
+  track_grad_norm: -1 # -1 for no tracking.
+  accumulate_grad_steps: 1 # Accumulate gradient over different batches.
+  distributed: False
+  num_nodes: -1
+  avail_gpus: -1 # TODO
+optimizer:
+  name: Adam
+  lr: 0.0
+  mask_lr_ratio: 1.
+  momentum: -1.
+  nesterov: False
+  weight_decay: 0.0
+scheduler:
+  name: ''
+  decay_steps: -1
+  factor: -1.0
+  patience: -1
+  warmup_epochs: -1
+  mode: 'max'
+# testing
+test:
+  batch_size_multiplier: 1
+  before_train: False
+# wandb logging
+wandb:
+  project: main
+  entity: ck-experimental
+# checkpoint
+pretrained:
+  load: False
+  alias: 'best' #Either best or last
+  filename: ""
+# hooks; function: application
+hooks_enabled: False
+hooks: [
+#  {
+#    function: 'log_dead_neuron_count_hook',
+#    type: 'forward',
+#    hook_onto: [ 'torch.nn.ReLU' ],
+#    limit_to: '',
+#    triggers: [ 'on_train_epoch_end' ],
+#  },
+#  {
+#    function: 'count_dead_neurons_hook',
+#    type: 'forward',
+#    hook_onto: ['torch.nn.ReLU'],
+#    limit_to: '',
+#    triggers: ['on_train_batch_start'],
+#  },
+  {
+    function: 'log_output_statistics',
+    type: 'forward',
+    hook_onto: [ 'ckconv.nn.SeparableFlexConv', 'torch.nn.BatchNorm1d' ],
+    limit_to: '',
+    triggers: [ 'on_train_epoch_start' ],
+    timeout: 1
+  },
+  {
+    function: 'log_parameter_statistics',
+    type: 'forward',
+    hook_onto: ['torch.nn.BatchNorm1d' ],
+    limit_to: '',
+    triggers: [ 'on_train_epoch_start' ],
+    timeout: 1
+  },
+  {
+    function: 'log_ckernel_statistics',
+    type: 'forward',
+    hook_onto: [ 'ckconv.nn.SeparableFlexConv'],
+    limit_to: '',
+    triggers: [ 'on_train_epoch_start' ],
+    timeout: 1
+  },
+  {
+    function: 'visualize_kernel_out_hook',
+    type: 'forward',
+    hook_onto: [ 'ckconv.nn.SeparableFlexConv' ],
+    limit_to: '',
+    triggers: [ 'on_train_epoch_start' ],
+    timeout: 1
+  },
+  {
+    function: 'log_mask_params',
+    type: 'forward',
+    hook_onto: [ 'ckconv.nn.SeparableFlexConv' ],
+    limit_to: '',
+    triggers: [ 'on_train_epoch_start' ],
+    timeout: 1
+  },
+#  {
+#    function: 'visualize_conv_kernel_out_hook',
+#    type: 'forward',
+#    hook_onto: [ 'torch.nn.Conv1d' ],
+#    limit_to: '',
+#    triggers: [ 'on_train_epoch_start' ]
+#  },
+#  {
+#    function: 'module_out_hist_hook',
+#    type: 'backward',
+#    hook_onto: ['ckconv.nn.ck.siren.SIREN'],
+#    limit_to: 'last',
+#    triggers: ['on_train_epoch_start']
+#  }
+]
