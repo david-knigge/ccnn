@@ -51,6 +51,7 @@ conv.bias=True conv.causal=True conv.type=SeparableFlexConv conv.use_fft=True da
 
 **MFCC CCNN-6,380**:
 ```
+conv.bias=True conv.causal=True conv.type=SeparableFlexConv conv.use_fft=True dataset.data_type=default dataset.name=SpeechCommands dataset.params.mfcc=True hooks_enabled=False kernel.bias=True kernel.chang_initialize=True kernel.no_hidden=64 kernel.no_layers=3 kernel.omega_0=1295.61 kernel.type=MAGNet mask.dynamic_cropping=True mask.init_value=0.075 mask.learn_mean=False mask.threshold=0.1 mask.type=gaussian net.block.type=S4 net.dropout=0.2 net.dropout_type=Dropout2d net.no_blocks=6 net.no_hidden=380 net.nonlinearity=GELU net.norm=BatchNorm net.type=ResNet optimizer.lr=0.02 optimizer.mask_lr_ratio=1 optimizer.name=AdamW optimizer.weight_decay=1e-06 scheduler.name=cosine scheduler.warmup_epochs=10 test.batch_size_multiplier=1 test.before_train=False train.batch_size=10 train.distributed=True train.epochs=160 train.max_epochs_no_improvement=150
 ```
 
 **Raw CCNN-4,140**:
@@ -136,11 +137,12 @@ python main.py conv.bias=True conv.causal=True conv.type=SeparableFlexConv conv.
 
 **Text CCNN-4,140**:
 ```
-
+conv.bias=True conv.causal=True conv.type=SeparableFlexConv conv.use_fft=True dataset.data_type=default dataset.name=IMDB hooks_enabled=False kernel.bias=True kernel.chang_initialize=True kernel.no_hidden=32 kernel.no_layers=3 kernel.omega_0=2966.6045345584143 kernel.type=MAGNet mask.dynamic_cropping=True mask.init_value=0.015 mask.learn_mean=False mask.threshold=0.1 mask.type=gaussian net.block.type=S4 net.dropout=0.2 net.dropout_type=Dropout net.no_blocks=4 net.no_hidden=140 net.nonlinearity=GELU net.norm=BatchNorm net.type=ResNet optimizer.lr=0.001 optimizer.mask_lr_ratio=0.1 optimizer.name=AdamW optimizer.weight_decay=1e-05 scheduler.name=cosine scheduler.warmup_epochs=10 test.batch_size_multiplier=1 test.before_train=False train.batch_size=50 train.epochs=60 train.max_epochs_no_improvement=150
 ```
 
 **Text CCNN-6,380**:
 ```
+conv.bias=True conv.causal=True conv.type=SeparableFlexConv conv.use_fft=True dataset.data_type=default dataset.name=IMDB hooks_enabled=False kernel.bias=True kernel.chang_initialize=True kernel.no_hidden=64 kernel.no_layers=3 kernel.omega_0=2966.605 kernel.type=MAGNet mask.dynamic_cropping=True mask.init_value=0.03 mask.learn_mean=False mask.threshold=0.1 mask.type=gaussian net.block.type=S4 net.dropout=0.3 net.dropout_type=Dropout net.no_blocks=6 net.no_hidden=380 net.nonlinearity=GELU net.norm=BatchNorm net.type=ResNet optimizer.lr=0.02 optimizer.mask_lr_ratio=1 optimizer.name=AdamW optimizer.weight_decay=0 scheduler.name=cosine scheduler.warmup_epochs=10 test.batch_size_multiplier=1 test.before_train=False train.batch_size=25 train.distributed=True train.epochs=60 train.max_epochs_no_improvement=150 
 ```
 
 **Image CCNN-4,140**:
