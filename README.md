@@ -1,7 +1,7 @@
 ## Continuous Convolutional Neural Networks: Towards a General Purpose CNN for Long Range Dependencies in $N$D
 This repository contains the source code for the paper:
 
-[Towards a General Purpose CNN for Long Range Dependencies in $N$D]() 
+[Towards a General Purpose CNN for Long Range Dependencies in $N$D](https://arxiv.org/abs/2206.03398) 
 
 **Abstract**
 
