@@ -59,10 +59,11 @@ Please see the [experiments README](/experiments/README.md) for details on repro
 If you found this work useful in your research, please consider citing:
 
 ```
-@misc{romero2022towards,
-      title={Towards a General Purpose CNN for Long Range Dependencies in $\mathrm{N}$D}, 
-      author={David W. Romero and David M. Knigge and Albert Gu and Erik J. Bekkers and Efstratios Gavves and Jakub M. Tomczak and Mark Hoogendoorn},
-      year={2022},
+@article{romero2022towards,
+  title={Towards a General Purpose CNN for Long Range Dependencies in $$\backslash$mathrm $\{$N$\}$ $ D},
+  author={Romero, David W and Knigge, David M and Gu, Albert and Bekkers, Erik J and Gavves, Efstratios and Tomczak, Jakub M and Hoogendoorn, Mark},
+  journal={arXiv preprint arXiv:2206.03398},
+  year={2022}
 }
 ```
 
