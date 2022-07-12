@@ -63,7 +63,7 @@ class FlexConvBase(CKConvBase):
         self.conv_types = conv_types
 
         # Define mask constructor
-        self.mask_constructor = globals()[f"{mask_type}_mask_{self.data_dim}d"]
+        self.mask_constructor = globals()[f"{mask_type}_mask"]
         # Define root finder & cropper functions
         if self.causal:
             root_function = f"{mask_type}_min_root"
@@ -132,32 +132,37 @@ class FlexConvBase(CKConvBase):
         else:
             # We not find the index from which the positions must be cropped
             # index = value - initial_linspace_value / step_size
-            index = torch.floor((root + 1.0) / self.linspace_stepsize).int().item()
+            index = (
+                torch.floor((root + 1.0) / self.linspace_stepsize).int().item()
+            )  # TODO: zero?
             return kernel_pos[..., index:]
 
     def crop_kernel_positions_centered(
         self,
         kernel_pos: torch.Tensor,
         root: float,
-        dim: int = -1,
     ):
-        if abs(root) >= 1.0:
-            return kernel_pos
-        else:
-            # We not find the indexes from which the positions must be cropped
-            # index = value - initial_linspace_value / step_size
-            mid_point = kernel_pos.shape[dim] // 2
-            index = (
-                torch.ceil((root - 0.0) / self.linspace_stepsize + 1e-8).int().item()
-            )
-            index_1 = mid_point - (index - 1)
-            index_2 = mid_point + index
-            if dim == -1:
-                return kernel_pos[..., index_1:index_2]
-            elif dim == -2:
-                return kernel_pos[..., index_1:index_2, :]
-            elif dim == -3:
-                return kernel_pos[..., index_1:index_2, :, :]
+        crops_needed = torch.abs(root) < 1.0
+
+        mid_point = (
+            torch.tensor(kernel_pos.shape[-self.data_dim :], device=kernel_pos.device)
+            // 2
+        )
+        index = torch.ceil((root - 0.0) / self.linspace_stepsize + 1e-8).int()
+        index_1 = mid_point - (index - 1)
+        index_2 = mid_point + index
+
+        slices = [
+            slice(None),
+        ] * len(kernel_pos.shape)
+
+        for i, crop_needed in enumerate(crops_needed):
+            if not crop_needed:
+                pass
+            else:
+                slices[i + 2] = slice(index_1[i], index_2[i])
+
+        return kernel_pos[slices]
 
     def construct_masked_kernel(self, x):
         # Construct kernel
@@ -167,31 +172,13 @@ class FlexConvBase(CKConvBase):
         if self.dynamic_cropping:
             # Based on the current mean and sigma values, compute the [min, max] values of the array.
             with torch.no_grad():
-                if self.data_dim == 1:
-                    # Find root
-                    x_root = self.root_function(
-                        thresh=self.mask_threshold,
-                        mean=self.mask_mean_param,
-                        sigma=self.mask_width_param,
-                        temperature=self.mask_temperature,  # Only used for sigmoid
-                    )
-                    # Only if the root is within [-1, 1], cropping must me made. Otherwise, the same grid is preserved.
-                    kernel_pos = self.crop_function(kernel_pos, x_root)
-                elif self.data_dim == 2:
-                    # Crop along y axis
-                    y_root = self.root_function(
-                        thresh=self.mask_threshold,
-                        mean=self.mask_mean_param[0],
-                        sigma=self.mask_width_param[0],
-                    )
-                    kernel_pos = self.crop_function(kernel_pos, y_root, dim=-2)
-                    # Crop along x axis
-                    x_root = self.root_function(
-                        thresh=self.mask_threshold,
-                        mean=self.mask_mean_param[1],
-                        sigma=self.mask_width_param[1],
-                    )
-                    kernel_pos = self.crop_function(kernel_pos, x_root, dim=-1)
+                roots = self.root_function(
+                    thresh=self.mask_threshold,
+                    mean=self.mask_mean_param,
+                    sigma=self.mask_width_param,
+                    temperature=self.mask_temperature,  # Only used for sigmoid
+                )
+                kernel_pos = self.crop_function(kernel_pos, roots)
         # 3. chang-initialize self.Kernel if not done yet.
         self.chang_initialization(kernel_pos)
         # 4. sample the kernel
@@ -202,10 +189,10 @@ class FlexConvBase(CKConvBase):
         # 5. construct mask and multiply with conv-kernel
         mask = self.mask_constructor(
             kernel_pos,
-            self.mask_mean_param,
-            self.mask_width_param,
+            self.mask_mean_param.view(1, -1, *(1,) * self.data_dim),
+            self.mask_width_param.view(1, -1, *(1,) * self.data_dim),
             temperature=self.mask_temperature,
-        ).view(1, 1, *kernel_pos.shape[2:])
+        )
         self.conv_kernel = mask * conv_kernel
         # Return the masked kernel
         return self.conv_kernel
@@ -298,28 +285,19 @@ class SeparableFlexConv(FlexConvBase):
 ###############################
 # Gaussian Masks / Operations #
 ###############################
-def gaussian_mask_2d(
-    rel_positions: torch.Tensor,
+def gaussian_mask(
+    kernel_pos: torch.Tensor,
     mask_mean_param: torch.Tensor,
     mask_width_param: torch.Tensor,
     **kwargs,
-) -> torch.Tensor:
-    mask_y = gaussian_function(
-        rel_positions[0, 0], mask_mean_param[1], mask_width_param[1]
+):
+    # mask.shape = [1, 1, Y, X] in 2D or [1, 1, X] in 1D
+    return torch.exp(
+        -0.5
+        * ((1.0 / mask_width_param * (kernel_pos - mask_mean_param)) ** 2).sum(
+            1, keepdim=True
+        )
     )
-    mask_x = gaussian_function(
-        rel_positions[0, 1], mask_mean_param[0], mask_width_param[0]
-    )
-    return mask_y * mask_x
-
-
-def gaussian_mask_1d(
-    rel_positions: torch.Tensor,
-    mask_mean_param: torch.Tensor,
-    mask_width_param: torch.Tensor,
-    **kwargs,
-) -> torch.Tensor:
-    return gaussian_function(rel_positions[0, 0], mask_mean_param, mask_width_param)
 
 
 def gaussian_inv_thresh(
@@ -330,16 +308,7 @@ def gaussian_inv_thresh(
 ):
     # Based on the threshold value, compute the value of the roots
     aux = sigma * torch.sqrt(-2.0 * torch.log(thresh))
-    return mean - aux, mean + aux
-
-
-def gaussian_function(
-    x: torch.Tensor,
-    mean: float,
-    sigma: float,
-    **kwargs,
-) -> torch.Tensor:
-    return torch.exp(-1.0 / 2 * ((1.0 / sigma) * (x - mean)) ** 2)
+    return torch.stack([mean - aux, mean + aux], dim=1)
 
 
 def gaussian_min_root(
@@ -348,7 +317,7 @@ def gaussian_min_root(
     sigma: float,
     **kwargs,
 ):
-    return min(gaussian_inv_thresh(thresh, mean, sigma))
+    return torch.min(gaussian_inv_thresh(thresh, mean, sigma))
 
 
 def gaussian_max_abs_root(
@@ -357,7 +326,7 @@ def gaussian_max_abs_root(
     sigma: float,
     **kwargs,
 ):
-    return max(map(abs, gaussian_inv_thresh(thresh, mean, sigma)))
+    return torch.max(torch.abs(gaussian_inv_thresh(thresh, mean, sigma)), dim=1).values
 
 
 ###############################
