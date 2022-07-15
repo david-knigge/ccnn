@@ -294,7 +294,7 @@ def gaussian_mask(
     # mask.shape = [1, 1, Y, X] in 2D or [1, 1, X] in 1D
     return torch.exp(
         -0.5
-        * ((1.0 / mask_width_param * (kernel_pos - mask_mean_param)) ** 2).sum(
+        * (1.0 / (mask_width_param ** 2 + 1e-8) * (kernel_pos - mask_mean_param) ** 2).sum(
             1, keepdim=True
         )
     )
