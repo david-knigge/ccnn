@@ -2,6 +2,7 @@ name: ccnn
 channels:
   - pytorch
   - defaults
+  - pyg
 dependencies:
   - python=3.9
   - h5py
@@ -12,6 +13,7 @@ dependencies:
   - torchvision
   - torchtext
   - plotly
+  - pyg
   - pip
   - pip:
     - hydra-core

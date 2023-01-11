@@ -6,3 +6,4 @@ from .stl10 import STL10DataModule
 from .pathfinder import PathFinderDataModule
 from .imdb import IMDBDataModule
 from .listops import ListOpsDataModule
+from .modelnet import ModelNetDataModule

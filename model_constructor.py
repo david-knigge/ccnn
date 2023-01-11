@@ -7,7 +7,7 @@ import ckconv
 import models
 from models.lightning_wrappers import (
     ClassificationWrapper,
-    RegressionWrapper,
+    PyGClassificationWrapper
 )
 
 # typing
@@ -59,7 +59,14 @@ def construct_model(
     )
 
     # Wrap in PytorchLightning
-    Wrapper = ClassificationWrapper
+    if cfg.dataset.name in ["ModelNet"]:
+        Wrapper = PyGClassificationWrapper
+    else:
+        Wrapper = ClassificationWrapper
+    model = Wrapper(
+        network=network,
+        cfg=cfg,
+    )
     model = Wrapper(
         network=network,
         cfg=cfg,
