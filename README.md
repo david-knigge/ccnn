@@ -1,19 +1,10 @@
-## Continuous Convolutional Neural Networks: Towards a General Purpose CNN for Long Range Dependencies in $N$D
+## Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN
 
-Code repository of the paper [Towards a General Purpose CNN for Long Range Dependencies in N-D](https://arxiv.org/abs/2206.03398).
+Code repository of the paper [Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN]().
 
 **Abstract**
 
-The use of Convolutional Neural Networks (CNNs) is widespread in Deep Learning due to a range of desirable model properties which 
-result in an efficient and effective machine learning framework. However, performant CNN architectures must be tailored to specific
-tasks in order to incorporate considerations such as the input length, resolution, and dimentionality. In this work, we overcome 
-the need for problem-specific CNN architectures with our *Continuous Convolutional Neural Network* (CCNN): a single CNN architecture 
-equipped with continuous convolutional kernels that can be used for tasks on data of arbitrary resolution, dimensionality and length
-without structural changes. Continuous convolutional kernels model long range dependencies at every layer, and remove the need for
-downsampling layers and task-dependent depths needed in current CNN architectures. We show the generality of our approach by applying
-the same CCNN to a wide set of tasks on sequential (1$\mathrm{D}$) and visual data (2$\mathrm{D}$). Our CCNN performs competitively
-and often outperforms the current state-of-the-art across all tasks considered.
-
+Performant Convolutional Neural Network (CNN) architectures must be tailored to specific tasks in order to consider the length, resolution, and dimensionality of the input data. In this work, we tackle the need for problem-specific CNN architectures.\break We present the \textit{Continuous Convolutional Neural Network} (CCNN): a single CNN able to process data of arbitrary resolution, dimensionality and length without any structural changes.  Its key component are its \textit{continuous convolutional kernels} which model long-range dependencies at every layer, and thus remove the need of current CNN architectures for task-dependent downsampling and depths. We showcase the generality of our method by using the \emph{same architecture} for tasks on sequential (1D), visual (2D) and point-cloud (3D) data. Our CCNN matches and often outperforms the current state-of-the-art across all tasks considered.
 ### Installation
 
 #### conda
@@ -58,11 +49,11 @@ Please see the [experiments README](/experiments/README.md) for details on repro
 If you found this work useful in your research, please consider citing:
 
 ```
-@article{romero2022towards,
-  title={Towards a General Purpose CNN for Long Range Dependencies in $$\backslash$mathrm $\{$N$\}$ $ D},
-  author={Romero, David W and Knigge, David M and Gu, Albert and Bekkers, Erik J and Gavves, Efstratios and Tomczak, Jakub M and Hoogendoorn, Mark},
-  journal={arXiv preprint arXiv:2206.03398},
-  year={2022}
+@article{knigge2023modelling,
+  title={Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN},
+  author={Knigge, David M and Romero, David W and Gu, Albert and Bekkers, Erik J and Gavves, Efstratios and Tomczak, Jakub M and Hoogendoorn, Mark and Sonke, Jan-Jakob},
+  journal={International Conference on Learning Representations},
+  year={2023}
 }
 ```
 
