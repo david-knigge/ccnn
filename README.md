@@ -1,6 +1,6 @@
 ## Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN
 
-Code repository of the paper [Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN]().
+Code repository of the paper [Modelling Long Range Dependencies in N-D: From Task-Specific to a General Purpose CNN](https://arxiv.org/abs/2301.10540).
 
 **Abstract**
 
