@@ -24,3 +24,18 @@ def Sine():
     out = sin(x)
     """
     return Expression(lambda x: torch.sin(x))
+
+
+
+class GraphGELU(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.gelu = torch.nn.GELU()
+
+    def forward(self, input):
+        """
+
+        :param input: PyG DataBatch object.
+        """
+        input.x = self.gelu(input.x)
+        return input

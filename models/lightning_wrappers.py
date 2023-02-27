@@ -375,3 +375,28 @@ class RegressionWrapper(LightningWrapperBase):
                     "global_step": self.global_step,
                 }
             )
+
+
+#############################
+#    Point Cloud Models     #
+#############################
+class PyGClassificationWrapper(ClassificationWrapper):
+    def _step(self, batch, accuracy_calculator):
+        logits = self(batch)
+        # Predictions
+        predictions = torch.argmax(logits, 1)
+        # Calculate accuracy and loss
+        accuracy_calculator(predictions, batch.y)
+        loss = self.loss_metric(logits, batch.y)
+        # Return predictions and loss
+        return predictions, logits, loss
+
+
+class PyGRegressionWrapper(RegressionWrapper):
+    def _step(self, batch, metric_calculator):
+        prediction = self(batch)
+        # Calculate loss
+        metric_calculator(prediction, batch.y)
+        loss = self.loss_metric(prediction, batch.y)
+        # Return predictions and loss
+        return prediction, loss

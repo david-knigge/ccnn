@@ -75,6 +75,12 @@ dataset:
     metric: 'MAE'
     seq_length: -1
     resolution: 32        # Used for PathFinder
+    modelnet:
+      num_nodes: -1         # For ModelNet. Number of nodes to sample.
+      resampling_factor: 1  # For ModelNet. Number of times to resample each mesh in the training set.
+      voxelize: False       # For ModelNet. Voxelize the dataset before training.
+      voxel_scale: -1       # For ModelNet. Voxelization scale.
+      modelnet_name: "40"   # For ModelNet, either 10 or 40.
 # training
 train:
   do: True
