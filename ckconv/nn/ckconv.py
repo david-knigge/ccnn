@@ -116,7 +116,8 @@ class CKConvBase(torch.nn.Module):
         self.register_buffer("conv_kernel", torch.zeros(1), persistent=False)
         self.register_buffer("linspace_stepsize", torch.zeros(1), persistent=False)
         self.register_buffer("kernel_positions", torch.zeros(1), persistent=False)
-        self.register_buffer("initialized", torch.zeros(1).bool(), persistent=False)
+        # 4. Persistent between train and inference
+        self.register_buffer("initialized", torch.zeros(1).bool(), persistent=True)
 
     def construct_kernel(self, x):
         # Construct kernel
